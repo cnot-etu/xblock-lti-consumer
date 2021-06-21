@@ -150,6 +150,8 @@ class LtiConsumer(object):  # pylint: disable=bad-option-value, useless-object-i
 
         self.xblock.user_email = ""
         self.xblock.user_username = ""
+        self.xblock.user_firstname = ""
+        self.xblock.user_lastname = ""
         self.xblock.user_language = ""
 
         # Username, email, and language can't be sent in studio mode, because the user object is not defined.
@@ -159,6 +161,8 @@ class LtiConsumer(object):  # pylint: disable=bad-option-value, useless-object-i
             real_user_object = self.xblock.runtime.get_real_user(self.xblock.runtime.anonymous_student_id)
             self.xblock.user_email = getattr(real_user_object, "email", "")
             self.xblock.user_username = getattr(real_user_object, "username", "")
+            self.xblock.user_firstname = getattr(real_user_object, "first_name", "")
+            self.xblock.user_lastname = getattr(real_user_object, "last_name", "")
             user_preferences = getattr(real_user_object, "preferences", None)
 
             if user_preferences is not None:
@@ -168,6 +172,7 @@ class LtiConsumer(object):  # pylint: disable=bad-option-value, useless-object-i
 
         if self.xblock.ask_to_send_username and self.xblock.user_username:
             lti_parameters["lis_person_sourcedid"] = self.xblock.user_username
+            lti_parameters["lis_person_name_full"] = self.xblock.user_firstname + " " + self.xblock.user_lastname
         if self.xblock.ask_to_send_email and self.xblock.user_email:
             lti_parameters["lis_person_contact_email_primary"] = self.xblock.user_email
         if self.xblock.user_language:
